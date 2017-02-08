@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import _ from 'underscore';
 import { Router, Route, Link, browserHistory } from 'react-router';
 import { connect } from 'react-redux';
-import { submitName } from '../../actions/Login';
+import { joinGame, setRoom } from '../../actions/Login';
 import container from '../visual/container';
+import io from 'socket.io-client';
 
 function mapStateToProps(state) {
   return {
@@ -14,14 +15,20 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    submitName: (socket, id, name) => {
-      dispatch(submitName(socket, id, name));
-    }
+    joinGame: (socket, room, id) => {
+      dispatch(joinGame(socket, room, id));
+    },
+    setRoom: (room) => {
+    	dispatch(setRoom(room));
+    },
   };
 }
 
-class LoginComponent extends Component {
+//todo: 'host / join screen.'
+
+class JoinComponent extends Component {
 	constructor(props) {
+		console.log("join");
 		super(props);
 		this.state = {
 			name: ''
@@ -31,23 +38,27 @@ class LoginComponent extends Component {
 	}
 
 	componentDidMount() {
-		if (typeof(this.props.player) !== 'undefined' && this.props.player.username) {
-			console.log("username is set!");
-			browserHistory.push('/hostOrLogin');
-		}
+		
 	}
 
-	componentDidUpdate() {
-		if (typeof(this.props.player) !== 'undefined' && this.props.player.username) {
-			console.log("username is set!");
-			browserHistory.push('/hostOrLogin');
+	componentDidUpdate(prevProps) {
+		if (typeof(this.props.player) !== 'undefined' && this.props.player.currentRoom) {
+			// Then we have a room and we can move off.
+			console.log("we have a room boi.");
+			if (!this.props.room) {
+				const room = io('/' + this.props.player.currentRoom);
+				this.props.setRoom(room);
+			}
+			browserHistory.push('/room');
+		} else {
+			console.log("no room yet.");
 		}
 	}
 
 	handleSubmit(event) {
 		event.preventDefault();
 		console.log(this.state.name);
-		this.props.submitName(this.props.socket, this.props.player.id, this.state.name);
+		this.props.joinGame(this.props.socket, this.state.name, this.props.player.id);
 	}
 
 	handleChange(event) {
@@ -59,7 +70,7 @@ class LoginComponent extends Component {
 			<div style={container}>
 				<br/>
 				<form className="form-group" onSubmit={this.handleSubmit}>
-					<h1>Enter your name</h1>
+					<h1>Enter game ID</h1>
 					<br/>
 					<input className="form-control" type="text" value={this.state.name} onChange={this.handleChange} />
 					<br/>
@@ -70,9 +81,9 @@ class LoginComponent extends Component {
 	}
 }
 
-const Login = connect(
+const Join = connect(
   mapStateToProps,
   mapDispatchToProps
-)(LoginComponent);
+)(JoinComponent);
 
-export default Login;
+export default Join;

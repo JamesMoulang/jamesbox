@@ -1,26 +1,24 @@
 import React, { Component } from 'react';
 import _ from 'underscore';
-import { Router, Route, Link, browserHistory } from 'react-router';
+import { Router, Route, Link, browserHistory } from 'react-router'
+import io from 'socket.io-client';
+import { setSocket, setPlayer } from '../../actions/Login';
 import { connect } from 'react-redux';
-import { submitName } from '../../actions/Login';
 import container from '../visual/container';
 
 function mapStateToProps(state) {
   return {
-    player: state.Login.player,
-    socket: state.Login.socket,
+    
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    submitName: (socket, id, name) => {
-      dispatch(submitName(socket, id, name));
-    }
+    
   };
 }
 
-class LoginComponent extends Component {
+class HostComponent extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -31,17 +29,11 @@ class LoginComponent extends Component {
 	}
 
 	componentDidMount() {
-		if (typeof(this.props.player) !== 'undefined' && this.props.player.username) {
-			console.log("username is set!");
-			browserHistory.push('/hostOrLogin');
-		}
+		
 	}
 
-	componentDidUpdate() {
-		if (typeof(this.props.player) !== 'undefined' && this.props.player.username) {
-			console.log("username is set!");
-			browserHistory.push('/hostOrLogin');
-		}
+	componentDidUpdate(prevProps) {
+		
 	}
 
 	handleSubmit(event) {
@@ -59,7 +51,7 @@ class LoginComponent extends Component {
 			<div style={container}>
 				<br/>
 				<form className="form-group" onSubmit={this.handleSubmit}>
-					<h1>Enter your name</h1>
+					<h1>Enter game ID</h1>
 					<br/>
 					<input className="form-control" type="text" value={this.state.name} onChange={this.handleChange} />
 					<br/>
@@ -70,9 +62,9 @@ class LoginComponent extends Component {
 	}
 }
 
-const Login = connect(
+const Host = connect(
   mapStateToProps,
   mapDispatchToProps
-)(LoginComponent);
+)(HostComponent);
 
-export default Login;
+export default Host;

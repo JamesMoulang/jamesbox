@@ -1,7 +1,7 @@
 import 'babel-polyfill';
 import React, {Component} from 'react';
 import { render } from 'react-dom';
-import { App, Login } from './components';
+import { App, Login, Host, HostOrLogin, Join, Room } from './components';
 import { Router, Route, Link, browserHistory } from 'react-router'
 
 // Gonna need...
@@ -29,6 +29,10 @@ render(
 			<Router history={browserHistory}>
 				<Route path="/" component={App}>
 					<Route path="login" component={Login}/>
+					<Route path="host" component={Host}/>
+					<Route path="hostOrLogin" component={HostOrLogin}/>
+					<Route path="join" component={Join}/>
+					<Route path="room" component={Room}/>
 				</Route>
 			</Router>
 		</Provider>

@@ -5,6 +5,8 @@ class Player {
 		this.id = id;
 		this.online = true;
 		this.username = null;
+		this.currentRoom = null;
+		this.hosting = null;
 	}
 }
 
